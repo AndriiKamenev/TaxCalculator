@@ -1,0 +1,44 @@
+<div class="container">
+  <!-- Section 1: Input Section -->
+  <mat-card class="input-section">
+    <form [formGroup]="taxForm" (ngSubmit)="calculateTax()">
+      <div class="row">
+        <label for="grossAnnualSalary" class="label">Gross Annual Salary:</label>
+        <mat-form-field class="input-field" appearance="fill">
+          <input matInput id="grossAnnualSalary" formControlName="grossAnnualSalary" type="number" />
+          <mat-error *ngIf="taxForm.get('grossAnnualSalary')?.hasError('required')">
+            Gross Annual Salary is required.
+          </mat-error>
+          <mat-error *ngIf="taxForm.get('grossAnnualSalary')?.hasError('min')">
+            Must be greater than zero.
+          </mat-error>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!taxForm.valid || loading" class="calc-button">
+          Calc
+        </button>
+      </div>
+    </form>
+  </mat-card>
+
+  <!-- Section 2: Results -->
+  <mat-card class="result-section" *ngIf="calculationResult">
+    <div class="result-item">
+      <strong>Gross Annual Salary:</strong> {{ calculationResult.grossAnnualSalary | customGbpCurrency }}
+    </div>
+    <div class="result-item">
+      <strong>Gross Monthly Salary:</strong> {{ calculationResult.grossMonthlySalary | customGbpCurrency }}
+    </div>
+    <div class="result-item">
+      <strong>Net Annual Salary:</strong> {{ calculationResult.netAnnualSalary | customGbpCurrency }}
+    </div>
+    <div class="result-item">
+      <strong>Net Monthly Salary:</strong> {{ calculationResult.netMonthlySalary | customGbpCurrency }}
+    </div>
+    <div class="result-item">
+      <strong>Annual Tax Paid:</strong> {{ calculationResult.annualTaxPaid | customGbpCurrency }}
+    </div>
+    <div class="result-item">
+      <strong>Monthly Tax Paid:</strong> {{ calculationResult.monthlyTaxPaid | customGbpCurrency }}
+    </div>
+  </mat-card>
+</div>

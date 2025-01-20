@@ -1,0 +1,6 @@
+@TaxCalculator.Server_HostAddress = http://localhost:5099
+
+GET {{TaxCalculator.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
