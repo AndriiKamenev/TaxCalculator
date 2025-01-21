@@ -1,0 +1,7 @@
+.result-section {
+  text-align: left; /* Align text content to the left */
+}
+
+.result-item {
+  margin-bottom: 8px; /* Add some spacing between items for better readability */
+}

@@ -21,24 +21,5 @@
   </mat-card>
 
   <!-- Section 2: Results -->
-  <mat-card class="result-section" *ngIf="calculationResult">
-    <div class="result-item">
-      <strong>Gross Annual Salary:</strong> {{ calculationResult.grossAnnualSalary | customGbpCurrency }}
-    </div>
-    <div class="result-item">
-      <strong>Gross Monthly Salary:</strong> {{ calculationResult.grossMonthlySalary | customGbpCurrency }}
-    </div>
-    <div class="result-item">
-      <strong>Net Annual Salary:</strong> {{ calculationResult.netAnnualSalary | customGbpCurrency }}
-    </div>
-    <div class="result-item">
-      <strong>Net Monthly Salary:</strong> {{ calculationResult.netMonthlySalary | customGbpCurrency }}
-    </div>
-    <div class="result-item">
-      <strong>Annual Tax Paid:</strong> {{ calculationResult.annualTaxPaid | customGbpCurrency }}
-    </div>
-    <div class="result-item">
-      <strong>Monthly Tax Paid:</strong> {{ calculationResult.monthlyTaxPaid | customGbpCurrency }}
-    </div>
-  </mat-card>
+  <app-tax-visualize [calculationResult]="calculationResult"></app-tax-visualize>
 </div>

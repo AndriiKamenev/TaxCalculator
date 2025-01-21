@@ -9,7 +9,7 @@ import { SalaryInput, CalculationResult } from '../../models/tax-calculator.mode
   standalone: false,
   
   templateUrl: './tax-calculator.component.html',
-  styleUrl: './tax-calculator.component.css'
+  styleUrls: ['./tax-calculator.component.css']
 })
 export class TaxCalculatorComponent implements OnInit {
   taxForm: FormGroup;

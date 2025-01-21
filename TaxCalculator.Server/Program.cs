@@ -3,6 +3,7 @@ using TaxCalculator.Server.Data;
 using TaxCalculator.Server.Infrastructure.Services;
 using TaxCalculator.Server.Interfaces;
 using Lamar.Microsoft.DependencyInjection;
+using TaxCalculator.Server.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.AddControllers()
 
 //// Register the service
 //builder.Services.AddScoped<ITaxCalculatorService, TaxCalculatorService>();
+//builder.Services.AddScoped<ITaxScemeRepository, TaxScemeRepository>();
 
 ////Add ApplicationDbContext and SQL Server support
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -35,6 +37,7 @@ builder.Host.UseLamar((context, registry) =>
 
     // Register services
     registry.For<ITaxCalculatorService>().Use<TaxCalculatorService>();
+    registry.For<ITaxScemeRepository>().Use<TaxScemeRepository>();
 
     // Optionally register other services as needed
 });

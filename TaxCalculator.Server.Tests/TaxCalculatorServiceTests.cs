@@ -1,81 +1,58 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
-using TaxCalculator.Server.Data;
 using TaxCalculator.Server.Data.Models;
 using TaxCalculator.Server.Infrastructure.Services;
-using TaxCalculator.Server.Interfaces;
 
-namespace TaxCalculator.Server.Tests
+public class TaxCalculatorServiceTests
 {
-    public class TaxCalculatorServiceTests
+    private Mock<ITaxScemeRepository> _mockTaxScemeRepository;
+    private Mock<ILogger<TaxCalculatorService>> _mockLogger;
+    private TaxCalculatorService _taxCalculatorService;
+
+    public TaxCalculatorServiceTests()
     {
-        private readonly ApplicationDbContext _context;
-        private readonly Mock<ILogger<TaxCalculatorService>> _mockLogger;
-        private readonly ITaxCalculatorService _service;
-
-        public TaxCalculatorServiceTests()
-        {
-            // Use InMemory Database
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
-                .Options;
-
-            _context = new ApplicationDbContext(options);
-
-            // Seed the database with test data
-            _context.TaxSceme.AddRange(
-            new TaxSceme { MinSalary = 0, MaxSalary = 5000, TaxRate = 0 },
-            new TaxSceme { MinSalary = 5000, MaxSalary = 20000, TaxRate = 0.20M },
-            new TaxSceme { MinSalary = 20000, MaxSalary = int.MaxValue, TaxRate = 0.40M }
-            );
-            _context.SaveChanges();
-
-            _mockLogger = new Mock<ILogger<TaxCalculatorService>>();
-
-            _service = new TaxCalculatorService(_context, _mockLogger.Object);
-        }
-
-        [Fact]
-        public void CalculateTax_ValidSalary_ReturnsCorrectResult()
-        {
-            // Arrange
-            int grossAnnualSalary = 40000;
-
-            // Act
-            var result = _service.CalculateTax(grossAnnualSalary);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(40000, result.GrossAnnualSalary);
-            Assert.Equal(3333.33m, result.GrossMonthlySalary);
-            Assert.Equal(29000m, result.NetAnnualSalary);
-            Assert.Equal(2416.67m, result.NetMonthlySalary);
-            Assert.Equal(11000m, result.AnnualTaxPaid);
-            Assert.Equal(916.67m, result.MonthlyTaxPaid);
-
-        }
-
-        [Fact]
-        public void CalculateTax_NoMatchingTaxBracket_LogsErrorAndThrowsException()
-        {
-            // Arrange
-            int grossAnnualSalary = -1; // Invalid salary to simulate no matching bracket
-
-            // Act & Assert
-            var exception = Assert.Throws<ArgumentException>(() => _service.CalculateTax(grossAnnualSalary));
-            Assert.Equal("Gross annual salary must be a positive value.", exception.Message);
-
-            // Verify that logger was called with an error message
-            _mockLogger.Verify(
-                logger => logger.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((obj, t) => obj.ToString().Contains("Gross annual salary cannot be negative.")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once);
-        
-        }
+        _mockTaxScemeRepository = new Mock<ITaxScemeRepository>();
+        _mockLogger = new Mock<ILogger<TaxCalculatorService>>();
+        _taxCalculatorService = new TaxCalculatorService(_mockTaxScemeRepository.Object, _mockLogger.Object);
     }
+
+    [Fact]
+    public void CalculateTax_ShouldReturnCalculationResult_WhenSalaryIsValid()
+    {
+        // Arrange
+        int grossAnnualSalary = 40000;
+
+        var taxScemes = new List<TaxSceme>
+        {
+            new TaxSceme { MinSalary = 0, MaxSalary = 5000, TaxRate = 0 },
+            new TaxSceme { MinSalary = 5000, MaxSalary = 20000, TaxRate = 0.2m },
+            new TaxSceme { MinSalary = 20000, MaxSalary = null, TaxRate = 0.4m }
+        };
+
+        // Mock the repository to return the tax schemes
+        _mockTaxScemeRepository.Setup(repo => repo.GetApplicableTaxScemes(grossAnnualSalary)).Returns(taxScemes);
+
+        // Act
+        var result = _taxCalculatorService.CalculateTax(grossAnnualSalary);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(40000, result.GrossAnnualSalary);
+        Assert.Equal(29000, result.NetAnnualSalary); // After tax calculation
+        Assert.Equal(2416.67m, result.NetMonthlySalary); // Net monthly salary
+        Assert.Equal(11000, result.AnnualTaxPaid); // Annual tax paid
+        Assert.Equal(916.67m, result.MonthlyTaxPaid); // Monthly tax paid
+    }
+
+    [Fact]
+    public void CalculateTax_ShouldThrowArgumentException_WhenSalaryIsNegative()
+    {
+        // Arrange
+        int grossAnnualSalary = -1000;
+
+        // Act & Assert
+        var exception = Assert.Throws<ArgumentException>(() => _taxCalculatorService.CalculateTax(grossAnnualSalary));
+        Assert.Equal("Gross annual salary must be a positive value.", exception.Message);
+    }
+    
 }

@@ -5,12 +5,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AngularMaterialModule } from './../angular-material.module';
 
 import { TaxCalculatorComponent } from './../work/components/tax-calculator/tax-calculator.component';
+import { TaxVisualizeComponent } from './../work/components/tax-visualize/tax-visualize.component';
 import { CustomGbpCurrencyPipe } from './pipes/custom-gbp-currency.pipe';
 import { TaxService } from './../work/services/tax-calculator.service';
 
 @NgModule({
   declarations: [
     TaxCalculatorComponent,
+    TaxVisualizeComponent,
     CustomGbpCurrencyPipe
   ],
   imports: [
@@ -24,7 +26,6 @@ import { TaxService } from './../work/services/tax-calculator.service';
     CurrencyPipe 
   ],
   exports: [
-    TaxCalculatorComponent,
     CustomGbpCurrencyPipe
   ]
 })

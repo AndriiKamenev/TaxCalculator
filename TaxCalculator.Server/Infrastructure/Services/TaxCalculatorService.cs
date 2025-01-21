@@ -1,5 +1,4 @@
-﻿using NuGet.DependencyResolver;
-using TaxCalculator.Server.Data;
+﻿using TaxCalculator.Server.Data;
 using TaxCalculator.Server.Data.v1.Response;
 using TaxCalculator.Server.Interfaces;
 
@@ -7,12 +6,13 @@ namespace TaxCalculator.Server.Infrastructure.Services
 {
     public class TaxCalculatorService: ITaxCalculatorService, IDisposable
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
+        private readonly ITaxScemeRepository _taxScemeRepository;
         private readonly ILogger<TaxCalculatorService> _logger;
 
-        public TaxCalculatorService(ApplicationDbContext context, ILogger<TaxCalculatorService> logger)
+        public TaxCalculatorService(ITaxScemeRepository taxScemeRepository, ILogger<TaxCalculatorService> logger)
         {
-            _context = context;
+            _taxScemeRepository = taxScemeRepository;
             _logger = logger;
         }
 
@@ -32,10 +32,7 @@ namespace TaxCalculator.Server.Infrastructure.Services
                 }
 
                 // Find the applicable tax scemes using LINQ
-                var taxScemes = _context.TaxSceme
-                    .Where(tb => tb.MinSalary <= grossAnnualSalary)
-                    .OrderByDescending(tb => tb.MinSalary);
-                    //.FirstOrDefault();
+                var taxScemes = _taxScemeRepository.GetApplicableTaxScemes(grossAnnualSalary);
 
                 if (taxScemes == null)
                 {
