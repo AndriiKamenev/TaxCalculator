@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TaxService } from '../../services/tax-calculator.service';
 import { SalaryInput, CalculationResult } from '../../models/tax-calculator.model'; // Import the interfaces
 
@@ -13,33 +13,21 @@ import { SalaryInput, CalculationResult } from '../../models/tax-calculator.mode
 })
 export class TaxCalculatorComponent implements OnInit {
   taxForm!: FormGroup;
-  calculationResult: CalculationResult | null = null; // Use CalculationResult interface
+  calculationResult: CalculationResult | null = null; 
   loading: boolean = false;
 
-  constructor(/*private fb: FormBuilder,*/ private taxService: TaxService) {
-    console.log("Tax constructor");
-    //this.taxForm = this.fb.group({
-    //  grossAnnualSalary: ['', [Validators.required, Validators.min(0)]]
-    //});
+  constructor( private taxService: TaxService) {
+   
   }
 
   ngOnInit(): void {
-    console.log("Before Tax Init");
     this.initializeForm();
-    console.log("After Tax Init");
   }
 
   private initializeForm(): void {
     this.taxForm = new FormGroup({
       grossAnnualSalary: new FormControl('', [Validators.required, Validators.min(0)])
     });
-  
-    //this.taxForm = this.fb.group({
-    //  grossAnnualSalary: [
-    //    '',
-    //    [Validators.required, Validators.min(0)] // Validators for the input
-    //  ]
-    //});
   }
 
   calculateTax() {
@@ -53,11 +41,11 @@ export class TaxCalculatorComponent implements OnInit {
 
       this.taxService.calculateTax(input).subscribe({
         next: (result: CalculationResult) => {
-          this.calculationResult = result; // Assign the result
+          this.calculationResult = result; 
           this.loading = false;
         },
         error: (err) => {
-          this.calculationResult = null; // Reset on error
+          this.calculationResult = null; 
           this.loading = false;
         }
       });
