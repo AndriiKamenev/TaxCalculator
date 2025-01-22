@@ -1,4 +1,4 @@
-﻿module.exports = function (config) {
+module.exports = function (config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
@@ -17,6 +17,9 @@
         // or set a specific seed with `seed: 4321`
       },
       clearContext: false // leave Jasmine Spec Runner output visible in browser
+    },
+    mime: {
+      'text/javascript': ['js', 'mjs']  // Add this line to configure the MIME type for JavaScript
     },
     jasmineHtmlReporter: {
       suppressAll: true // removes the duplicated traces

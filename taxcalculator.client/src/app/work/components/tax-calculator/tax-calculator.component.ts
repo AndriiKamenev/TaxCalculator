@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TaxService } from '../../services/tax-calculator.service';
 import { SalaryInput, CalculationResult } from '../../models/tax-calculator.model'; // Import the interfaces
 
@@ -12,27 +12,34 @@ import { SalaryInput, CalculationResult } from '../../models/tax-calculator.mode
   styleUrls: ['./tax-calculator.component.css']
 })
 export class TaxCalculatorComponent implements OnInit {
-  taxForm: FormGroup;
+  taxForm!: FormGroup;
   calculationResult: CalculationResult | null = null; // Use CalculationResult interface
   loading: boolean = false;
 
-  constructor(private fb: FormBuilder, private taxService: TaxService) {
-    this.taxForm = this.fb.group({
-      grossAnnualSalary: ['', [Validators.required, Validators.min(0)]]
-    });
+  constructor(/*private fb: FormBuilder,*/ private taxService: TaxService) {
+    console.log("Tax constructor");
+    //this.taxForm = this.fb.group({
+    //  grossAnnualSalary: ['', [Validators.required, Validators.min(0)]]
+    //});
   }
 
   ngOnInit(): void {
+    console.log("Before Tax Init");
     this.initializeForm();
+    console.log("After Tax Init");
   }
 
   private initializeForm(): void {
-    this.taxForm = this.fb.group({
-      grossAnnualSalary: [
-        '',
-        [Validators.required, Validators.min(0)] // Validators for the input
-      ]
+    this.taxForm = new FormGroup({
+      grossAnnualSalary: new FormControl('', [Validators.required, Validators.min(0)])
     });
+  
+    //this.taxForm = this.fb.group({
+    //  grossAnnualSalary: [
+    //    '',
+    //    [Validators.required, Validators.min(0)] // Validators for the input
+    //  ]
+    //});
   }
 
   calculateTax() {
