@@ -1,6 +1,6 @@
 ﻿using TaxCalculator.Server.Data.Models;
 
-namespace TaxCalculator.Server.Infrastructure.Services
+namespace TaxCalculator.Server.Interfaces
 {
     public interface ITaxScemeRepository
     {

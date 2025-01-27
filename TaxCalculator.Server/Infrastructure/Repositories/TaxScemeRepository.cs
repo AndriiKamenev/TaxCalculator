@@ -1,6 +1,6 @@
 ﻿using TaxCalculator.Server.Data;
 using TaxCalculator.Server.Data.Models;
-using TaxCalculator.Server.Infrastructure.Services;
+using TaxCalculator.Server.Interfaces;
 
 namespace TaxCalculator.Server.Infrastructure.Repositories
 {

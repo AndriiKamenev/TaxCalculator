@@ -1,3 +1,6 @@
+
+const path = require('path'); // Import the path module
+
 module.exports = function (config) {
   config.set({
     basePath: '',
@@ -9,6 +12,39 @@ module.exports = function (config) {
       require('karma-coverage'),
       require('@angular-devkit/build-angular/plugins/karma')
     ],
+    files: [
+      { pattern: './src/test.ts', watched: false } // Entry point for tests
+    ],
+    webpack: {
+      mode: 'development',
+      devtool: 'inline-source-map', // Source maps for debugging
+      resolve: {
+        extensions: ['.ts', '.js'], // Resolve TypeScript and JavaScript files
+        alias: {
+          '@app': path.resolve(__dirname, 'src/app/')
+        }
+      },
+      module: {
+        rules: [
+          {
+            test: /\.ts$/,
+            use: 'ts-loader',
+            exclude: /node_modules/
+          },
+          {
+            test: /\.html$/,
+            loader: 'html-loader' // Handle Angular templates
+          },
+          {
+            test: /\.css$/,
+            use: ['style-loader', 'css-loader'] // Handle CSS files
+          }
+        ]
+      }
+    },
+    webpackMiddleware: {
+      stats: 'errors-only' // Show only errors
+    },
     client: {
       jasmine: {
         // you can add configuration options for Jasmine here
@@ -35,7 +71,7 @@ module.exports = function (config) {
     reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_DEBUG,
     autoWatch: true,
     browsers: ['Chrome'],
     singleRun: false,
