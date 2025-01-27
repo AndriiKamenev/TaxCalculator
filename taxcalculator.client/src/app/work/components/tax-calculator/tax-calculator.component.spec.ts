@@ -9,6 +9,7 @@ import { TaxVisualizeComponent } from './../../../work/components/tax-visualize/
 //import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
+import { CalculationResult } from '../../models/tax-calculator.model';
 
 describe('TaxCalculatorComponent', () => {
   let component: TaxCalculatorComponent;
@@ -59,23 +60,23 @@ describe('TaxCalculatorComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  //it('should call calculateTax and set calculationResult on success', () => {
-  //  const mockCalculationResult: CalculationResult = {
-  //    grossAnnualSalary: 30000,
-  //    grossMonthlySalary: 2500,
-  //    netAnnualSalary: 24000,
-  //    netMonthlySalary: 2000,
-  //    annualTaxPaid: 6000,
-  //    monthlyTaxPaid: 500,
-  //  };
+  it('should call calculateTax and set calculationResult on success', () => {
+    const mockCalculationResult: CalculationResult = {
+      grossAnnualSalary: 30000,
+      grossMonthlySalary: 2500,
+      netAnnualSalary: 24000,
+      netMonthlySalary: 2000,
+      annualTaxPaid: 6000,
+      monthlyTaxPaid: 500,
+    };
 
-  //  taxServiceMock.calculateTax.and.returnValue(of(mockCalculationResult)); // Mock successful response
+    taxServiceMock.calculateTax.and.returnValue(of(mockCalculationResult)); // Mock successful response
 
-  //  component.taxForm.get('grossAnnualSalary')?.setValue(30000);
-  //  component.calculateTax();
+    component.taxForm.get('grossAnnualSalary')?.setValue(30000);
+    component.calculateTax();
 
-  //  expect(taxServiceMock.calculateTax).toHaveBeenCalledWith({ grossAnnualSalary: 30000 });
-  //  expect(component.calculationResult).toEqual(mockCalculationResult);
-  //  expect(component.loading).toBeFalse();
-  //});
+    expect(taxServiceMock.calculateTax).toHaveBeenCalledWith({ grossAnnualSalary: 30000 });
+    expect(component.calculationResult).toEqual(mockCalculationResult);
+    expect(component.loading).toBeFalse();
+  });
 });
